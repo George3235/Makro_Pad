@@ -1,0 +1,89 @@
+#include "Encoder.h"
+
+EncoderHandler::EncoderHandler(USBHIDConsumerControl& consumer)
+  : _consumer(consumer) {}
+
+void EncoderHandler::begin() {
+    pinMode(ENC_DT,  INPUT_PULLUP);
+    pinMode(ENC_CLK, INPUT_PULLUP);
+    pinMode(ENC_SW,  INPUT_PULLUP);
+
+    lastClk        = digitalRead(ENC_CLK);
+    buttonState    = digitalRead(ENC_SW);
+    lastButtonPress = 0;
+    longPressFired  = false;
+}
+
+void EncoderHandler::update() {
+    // --- Rotary ---
+    int clkState = digitalRead(ENC_CLK);
+    if (clkState != lastClk) {
+        uint32_t now = millis();
+        if (now - lastChangeMs > 1) { // enkel debounce
+            if (digitalRead(ENC_DT) != clkState) {
+                volumeUp();
+            } else {
+                volumeDown();
+            }
+            lastChangeMs = now;
+        }
+        lastClk = clkState;
+    }
+
+    // --- Button (single/double/long) ---
+    int sw = digitalRead(ENC_SW);
+
+    // edge: HIGH -> LOW = press
+    if (buttonState == HIGH && sw == LOW) {
+        pressStart = millis();
+        longPressFired = false;
+    }
+
+    // håll-koll: long press
+    if (sw == LOW && !longPressFired) {
+        if (millis() - pressStart > 800) { // 800 ms long-press
+            onLongPress();
+            longPressFired = true;
+        }
+    }
+
+    // edge: LOW -> HIGH = release
+    if (buttonState == LOW && sw == HIGH) {
+        uint32_t now = millis();
+        if (!longPressFired) {
+            if (now - lastButtonPress < 400) {
+                onDoubleClick();
+                lastButtonPress = 0; // reset fönstret
+            } else {
+                onClick();
+                lastButtonPress = now;
+            }
+        }
+    }
+    buttonState = sw;
+}
+
+void EncoderHandler::volumeUp() {
+    _consumer.press(HID_USAGE_CONSUMER_VOLUME_INCREMENT); // från TinyUSB enum
+    delay(2);
+    _consumer.release();
+}
+
+void EncoderHandler::volumeDown() {
+    _consumer.press(HID_USAGE_CONSUMER_VOLUME_DECREMENT); // från TinyUSB enum
+    delay(2);
+    _consumer.release();
+}
+
+// --- callback-stubs ---
+void EncoderHandler::onClick() {
+  _consumer.press(HID_USAGE_CONSUMER_MUTE); 
+  delay(2); 
+  _consumer.release();
+}
+void EncoderHandler::onDoubleClick() {
+    Serial.println("Encoder: Double click");
+}
+void EncoderHandler::onLongPress() {
+    Serial.println("Encoder: Long press");
+}

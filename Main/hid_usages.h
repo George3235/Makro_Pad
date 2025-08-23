@@ -1,0 +1,13 @@
+#ifndef HID_USAGES_H
+#define HID_USAGES_H
+
+// HID Usage IDs för Consumer Control (volym)
+#ifndef HID_USAGE_CONSUMER_VOLUME_INCREMENT
+  #define HID_USAGE_CONSUMER_VOLUME_INCREMENT  0xE9
+#endif
+
+#ifndef HID_USAGE_CONSUMER_VOLUME_DECREMENT
+  #define HID_USAGE_CONSUMER_VOLUME_DECREMENT  0xEA
+#endif
+
+#endif
