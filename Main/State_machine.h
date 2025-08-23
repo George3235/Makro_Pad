@@ -6,19 +6,17 @@
 // Enum with the states
 
 enum class State : uint8_t {
-  NUMS = 1,                        // Numbers 1-9
-  SHORT_CUTS = 2,                  // Short Cuts
-  APPLICATIONS = 3                
+  NUMS,                        // Numbers 1-9
+  SHORT_CUTS,                  // Short Cuts
+  APPLICATIONS,                // 
 };
 
 class StateMachine {
   public: 
-    using ChangeCallBack = void (*) (State newState);
-
     StateMachine();
 
     // Initiera med ett startläge.
-    void begin(State initial = State::NUMS);
+    void begin();
 
     // Sätt läge explicit 
     void set (State s); 
@@ -29,11 +27,10 @@ class StateMachine {
     // Läsa av nuvarande state
     State current(); 
 
-  private: 
-    State _state = State::NUMS;
-    ChangeCallBack _onChange = nullptr; 
+    // Byter State till APPLICATIONS
+    void setApplications();
 
-    // Anropa denna i set() när läget faktiskt ändrats
-    void notify();
+  private: 
+    State currentState = State::NUMS; 
 };
-#endid
+#endif

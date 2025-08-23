@@ -12,6 +12,9 @@ void EncoderHandler::begin() {
     buttonState    = digitalRead(ENC_SW);
     lastButtonPress = 0;
     longPressFired  = false;
+
+    // Initiera stateMachine 
+    stateMachine.begin();
 }
 
 void EncoderHandler::update() {
@@ -51,7 +54,7 @@ void EncoderHandler::update() {
     if (buttonState == LOW && sw == HIGH) {
         uint32_t now = millis();
         if (!longPressFired) {
-            if (now - lastButtonPress < 400) {
+            if (now - lastButtonPress < 1000) {
                 onDoubleClick();
                 lastButtonPress = 0; // reset fönstret
             } else {
@@ -81,9 +84,15 @@ void EncoderHandler::onClick() {
   delay(2); 
   _consumer.release();
 }
+
+// Om användaren trycker två gånger efter varandra
+// Ska växla mellan States: NUMS och SHORT_CUTS
 void EncoderHandler::onDoubleClick() {
-    Serial.println("Encoder: Double click");
+    stateMachine.toggle();
 }
+
+// Om användaren trycker en längre period 
+// Byter direkt till State Applications
 void EncoderHandler::onLongPress() {
-    Serial.println("Encoder: Long press");
+    stateMachine.setApplications();
 }

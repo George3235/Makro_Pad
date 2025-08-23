@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "Config.h"
 #include "USBHIDConsumerControl.h"  // innehåller TinyUSB HID-usage enum via beroenden
+#include "State_machine.h"
 
 class EncoderHandler {
 public:
@@ -15,6 +16,8 @@ public:
     void onClick();       // singelklick
     void onDoubleClick(); // dubbelklick
     void onLongPress();   // långtryck
+
+    StateMachine stateMachine;   // Variabel av state machine 
 
 private:
     USBHIDConsumerControl& _consumer;
