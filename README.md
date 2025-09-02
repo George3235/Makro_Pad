@@ -76,7 +76,7 @@ Koden skannar ***kolumner aktiva låga*** (sätter kolumn ***LOW*** en i taget) 
 | Row 1 | 4  | Input Pull-Up |
 | Row 2 | 5  | Input Pull-Up |
 
-> [!VIKTIG]
+> [!IMPORTANT]
 > ***Diod-riktning***: Rader är höga via pull-up och kolumnen dras  ***LOW*** när den skannas. <br>
 > Strömmen ska går rad -> kolumn när knappen trycks. <br>
 > Sätt anod rad, katod (ringen) mot kolumn. 
