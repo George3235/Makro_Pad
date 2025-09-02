@@ -4,12 +4,38 @@
 #include <EEPROM.h>
 
 #include "Config.h"        // pinnar, keymap, LED_PIN, EEPROM_SIZE
-//#include "hid_usages.h"    // HID Usage-konstanter
-#include "Encoder.h"       // EncoderHandler-klass
+#include "State_machine.h"
+#include "Encoder.h"
+#include "Shortcuts.h"
 
+// --- Skapa HID-objekten först ---
 USBHIDKeyboard Keyboard;
 USBHIDConsumerControl Consumer;
+
+// --- Shortcuts-hjälpare (Windows-only) ---
+Shortcuts shortcuts(Keyboard, &Consumer);
+
+// --- Encoder (äger din StateMachine inuti sig) ---
 EncoderHandler encoder(Consumer);
+
+// --- 3x3 mapping för SHORT_CUTS-läget ---
+static const Shortcut shortcutsMap[3][3] = {
+  { SC_COPY,       SC_UNDO,      SC_SCREENSHOT        },  // rad 0
+  { SC_PASTE,       SC_SELECT_ALL, SC_RENAME    },  // rad 1
+  { SC_CUT, SC_NEW_TAB,       SC_PAUS       }   // rad 2
+};
+
+// --- Hjälpfunktion: skicka rätt sak beroende på nuvarande State ---
+static inline void handleKeyPress(uint8_t r, uint8_t c) {
+  State st = encoder.stateMachine.current();
+  if (st == State::NUMS) {
+    // Siffror via keymap
+    Keyboard.print(keymap[r][c]);
+  } else {
+    // Genvägar (Windows): copy/paste/screenshot/URL/play-pause osv.
+    shortcuts.send(shortcutsMap[r][c]);
+  }
+}
 
 void setup() {
   Serial.begin(115200);
@@ -20,7 +46,7 @@ void setup() {
   // Starta USB HID
   USB.begin();
   Keyboard.begin();
-  Consumer.begin();   // viktigt för Consumer Control (volym/mute m.m.)
+  Consumer.begin();   // viktigt för Consumer Control (play/pause m.m.)
 
   // Initiera matrispinnar
   for (uint8_t i = 0; i < 3; i++) {
@@ -29,7 +55,7 @@ void setup() {
     pinMode(rows[i], INPUT_PULLUP);  // rader input med pullup
   }
 
-  // Initiera encoder
+  // Initiera encoder (inkl. stateMachine.begin())
   encoder.begin();
 
   // LED
@@ -53,20 +79,18 @@ void loop() {
     for (uint8_t r = 0; r < 3; r++) {
       if (digitalRead(rows[r]) == LOW) {  // knappen tryckt (aktiv låg)
         anyPressed = true;
-
-        char key = keymap[r][c];
         digitalWrite(LED_PIN, HIGH);
 
-        // Sänd tecknet via USB HID-tangentbord
-        Keyboard.print(key);
+        // Skicka beroende på State (NUMS -> siffra, annars -> genväg)
+        handleKeyPress(r, c);
 
-        // Enkel debounce så vi inte spammar
+        // Enkel debounce
         delay(200);
 
-        // Vänta på release (valfritt men brukar ge bättre känsla)
+        // Vänta på release (så vi inte spammar vid hållning)
         while (digitalRead(rows[r]) == LOW) {
           delay(2);
-          encoder.update();  // låt encoder fortsätta fungera under hållning
+          encoder.update();  // låt encoder funka under hållning
         }
       }
     }

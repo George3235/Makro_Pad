@@ -8,7 +8,7 @@
 enum class State : uint8_t {
   NUMS,                        // Numbers 1-9
   SHORT_CUTS,                  // Short Cuts
-  APPLICATIONS,                // 
+  APPLICATIONS,                // Till Senare
 };
 
 class StateMachine {

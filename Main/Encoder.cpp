@@ -54,7 +54,8 @@ void EncoderHandler::update() {
     if (buttonState == LOW && sw == HIGH) {
         uint32_t now = millis();
         if (!longPressFired) {
-            if (now - lastButtonPress < 1000) {
+            // Om man trycker ner knappen längre än 1.5 Sekunder 
+            if (now - lastButtonPress >= 1500) { 
                 onDoubleClick();
                 lastButtonPress = 0; // reset fönstret
             } else {
