@@ -14,6 +14,7 @@ void Shortcuts::openURLWindows(const char* url) const {
   _kb.write('\n');                // Enter
 }
 
+// Funktion som returnerar olika Short cuts 
 void Shortcuts::send(Shortcut s) const {
   switch (s) {
     case SC_COPY:        press2(KEY_LEFT_CTRL, 'c'); break;

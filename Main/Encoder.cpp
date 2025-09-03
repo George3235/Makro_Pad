@@ -3,6 +3,7 @@
 EncoderHandler::EncoderHandler(USBHIDConsumerControl& consumer)
   : _consumer(consumer) {}
 
+// Funktion som startar allting som har med Encoder att göra
 void EncoderHandler::begin() {
     pinMode(ENC_DT,  INPUT_PULLUP);
     pinMode(ENC_CLK, INPUT_PULLUP);
@@ -17,6 +18,7 @@ void EncoderHandler::begin() {
     stateMachine.begin();
 }
 
+// Funktion för att uppdatera Encodern's state och egenskaper
 void EncoderHandler::update() {
     // --- Rotary ---
     int clkState = digitalRead(ENC_CLK);
@@ -60,19 +62,21 @@ void EncoderHandler::update() {
     buttonState = sw;
 }
 
+// Om man vrider åt höger -> höjer volymen
 void EncoderHandler::volumeUp() {
     _consumer.press(HID_USAGE_CONSUMER_VOLUME_INCREMENT); // från TinyUSB enum
     delay(2);
     _consumer.release();
 }
 
+// Om man vrider åt vänster -> Sänker volymen
 void EncoderHandler::volumeDown() {
     _consumer.press(HID_USAGE_CONSUMER_VOLUME_DECREMENT); // från TinyUSB enum
     delay(2);
     _consumer.release();
 }
 
-// --- callback-stubs ---
+// Om man trycker på Encodern's knapp snabbt -> Mute / Unmute
 void EncoderHandler::onClick() {
   _consumer.press(HID_USAGE_CONSUMER_MUTE); 
   delay(2); 
