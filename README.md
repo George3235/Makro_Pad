@@ -159,3 +159,22 @@ Screenshot  Rename(F2)  Play/Pause
 5. Kompilera & ladda upp. Efter flash ska en ny HID-enhet dyka upp (tangentbord + consumer control).
 
 > Om porten inte syns: håll nere BOOT och tryck RESET, släpp RESET, släpp BOOT (sätter S3 i download-mode). Välj rätt COM-port och försök igen.
+
+
+## 3D-Filer (CAD & STL)
+Alla 3D-filer för chassit finns i mappen `3D_Files` i repot. <br>
+
+### Innehåll: 
+- `Topppen_Done` - övre skal med platta för MX-switchar
+- `Bottom` - underdel
+
+### Utskriftrekommendationer: 
+- Material: PLA eller PETG
+- Lagerhöjg : ~0.2 mm, 3 väggar, 20-30 % infill
+- Stöd: endast där det behöver (vänd undersidan nedåt)
+- Toleranser: hål för MX-switchar är dimensionerade nära 14x14 mm; finjustera skala/tolerans vid behov beroende på skrivare
+
+------------------------------------
+## Galleri
+![MacroPad – färdig](Micro_Pad.jpg)
+
