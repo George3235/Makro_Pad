@@ -14,7 +14,6 @@ public:
     void update();  // körs i loop()
 
     void onClick();       // singelklick
-    void onDoubleClick(); // dubbelklick
     void onLongPress();   // långtryck
 
     StateMachine stateMachine;   // Variabel av state machine 

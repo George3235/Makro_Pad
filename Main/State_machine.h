@@ -8,7 +8,6 @@
 enum class State : uint8_t {
   NUMS,                        // Numbers 1-9
   SHORT_CUTS,                  // Short Cuts
-  APPLICATIONS,                // Till Senare
 };
 
 class StateMachine {
@@ -26,9 +25,6 @@ class StateMachine {
 
     // Läsa av nuvarande state
     State current(); 
-
-    // Byter State till APPLICATIONS
-    void setApplications();
 
   private: 
     State currentState = State::NUMS; 

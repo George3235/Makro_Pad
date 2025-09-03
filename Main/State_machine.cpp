@@ -13,22 +13,10 @@ void StateMachine::set(State s) {
 
 // Byter state mellan NUMS och SHORT_CUTS
 void StateMachine::toggle() {
-  switch (currentState) {
-    case State::NUMS:
-      set(State::SHORT_CUTS);
-      break;
-    default:
-      set(State::NUMS);
-      break;
-  }
+  currentState = (currentState == State::NUMS) ? State::SHORT_CUTS : State::NUMS; 
 }
 
 // Retunerar nuvarande State
 State StateMachine::current() {
   return currentState;
-}
-
-// Byter till APPLICATIONS state
-void StateMachine::setApplications() {
-  set(State::APPLICATIONS);
 }

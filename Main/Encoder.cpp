@@ -54,14 +54,7 @@ void EncoderHandler::update() {
     if (buttonState == LOW && sw == HIGH) {
         uint32_t now = millis();
         if (!longPressFired) {
-            // Om man trycker ner knappen längre än 1.5 Sekunder 
-            if (now - lastButtonPress >= 1500) { 
-                onDoubleClick();
-                lastButtonPress = 0; // reset fönstret
-            } else {
-                onClick();
-                lastButtonPress = now;
-            }
+            onClick();
         }
     }
     buttonState = sw;
@@ -86,14 +79,8 @@ void EncoderHandler::onClick() {
   _consumer.release();
 }
 
-// Om användaren trycker två gånger efter varandra
-// Ska växla mellan States: NUMS och SHORT_CUTS
-void EncoderHandler::onDoubleClick() {
-    stateMachine.toggle();
-}
 
-// Om användaren trycker en längre period 
-// Byter direkt till State Applications
+// Om användaren trycker en längre period ska den byta layer
 void EncoderHandler::onLongPress() {
-    stateMachine.setApplications();
+    stateMachine.toggle();
 }
