@@ -178,3 +178,5 @@ Alla 3D-filer för chassit finns i mappen `3D_Files` i repot. <br>
 ## Galleri
 ![MacroPad – färdig](Micro_Pad.jpg)
 
+## License
+MIT © 2025 DITT NAMN — se [LICENSE](./LICENSE).
